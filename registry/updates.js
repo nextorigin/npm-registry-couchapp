@@ -1,5 +1,57 @@
 var updates = exports
 
+updates.distTags = function (doc, req) {
+  var dt = doc['dist-tags']
+  var versions = doc.versions
+
+  function error (message) {
+    return [ { _id: ".error.", forbidden: message },
+             JSON.stringify({ error: message }) ]
+  }
+
+  function ok () {
+    return [ doc, JSON.stringify({ ok: "dist-tags updated" }) ]
+  }
+
+  if (!dt || !versions)
+    return error("bad document: no dist-tags or no versions")
+
+  if (req.body)
+    var data = JSON.parse(req.body)
+
+  var tag = req.query.tag
+  switch (req.method) {
+    case "DELETE":
+      if (!tag)
+        return error("tag param required")
+      delete dt[tag]
+      return ok()
+
+    case "PUT":
+    case "POST":
+      if (typeof data === "string") {
+        if (!tag)
+          return error("tag param required when setting single dist-tag")
+        dt[tag] = data
+
+      } else if (data && typeof data === "object") {
+        if (tag)
+          return error("must not provide tag param when setting multiple dist-tags")
+
+        if (req.param === "PUT")
+          doc["dist-tags"] = data
+        else for (var tag in data)
+          dt[tag] = data[tag]
+
+      } else {
+        return error("unknown data type")
+      }
+      return ok()
+    default:
+      return error("unknown request method: " + req.method)
+  }
+}
+
 updates.delete = function (doc, req) {
   if (req.method !== "DELETE")
     return [ { _id: ".error.", forbidden: "Method not allowed" },
@@ -47,7 +99,7 @@ updates.metadata = function (doc, req) {
 }
 
 updates.star = function (doc, req) {
-  var username = req.body
+  var username = JSON.parse(req.body)
 
   if (!doc.users) doc.users = {}
 
@@ -57,7 +109,7 @@ updates.star = function (doc, req) {
 }
 
 updates.unstar = function (doc, req) {
-  var username = req.body
+  var username = JSON.parse(req.body)
 
   if (!doc.users) return [doc, JSON.stringify({ok: doc.name + ' has no users'})]
 
@@ -253,6 +305,8 @@ updates.package = function (doc, req) {
   // return ok(result, message) to exit successfully at any point.
   // Does some final data integrity cleanup stuff.
   function ok (doc, message) {
+    // access is handled elsewhere, and should not be stored.
+    delete doc.access
     delete doc.mtime
     delete doc.ctime
     var time = doc.time = doc.time || {}

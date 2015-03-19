@@ -1,6 +1,41 @@
 
 var shows = exports
 
+shows.notImplemented = function (doc, req) {
+  return {
+    code: 501,
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      error: "Not Implemented",
+      reason: "This server does not support this endpoint"
+    })
+  }
+}
+
+shows.whoami = function (doc, req) {
+  return {
+    code: 200,
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify({
+      username: req.userCtx.name
+    })
+  }
+}
+
+shows.distTags = function (doc, req) {
+  return {
+    code: 200,
+    headers: {
+      "content-type": "application/json"
+    },
+    body: JSON.stringify(doc["dist-tags"])
+  }
+}
+
 shows.package = function (doc, req) {
   require("monkeypatch").patch(Object, Date, Array, String)
 
