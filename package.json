@@ -1,6 +1,6 @@
 {
   "name": "npm-registry-couchapp",
-  "version": "2.6.7",
+  "version": "2.6.11",
   "description": "The CouchApp implementation of an npm registry",
   "scripts": {
     "start": "bash ./push.sh",
@@ -15,7 +15,6 @@
   },
   "devDependencies": {
     "request": "^2.42.0",
-    "json": "^9.0.1",
     "parse-json-response": "^1.0.1",
     "rimraf": "~2.2.6",
     "tap": "*",
