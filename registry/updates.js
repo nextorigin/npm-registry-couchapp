@@ -59,13 +59,14 @@ updates.delete = function (doc, req) {
 
   require("monkeypatch").patch(Object, Date, Array, String)
 
+  var username = req.headers['Npm-User'];
   var dt = doc['dist-tags']
   var lv = dt && dt.latest
   var latest = lv && doc.versions && doc.versions[lv]
 
   var t = doc.time || {}
   t.unpublished = {
-    name: req.userCtx.name,
+    name: username,
     time: new Date().toISOString(),
     tags: dt || {},
     maintainers: doc.maintainers,
@@ -146,6 +147,7 @@ updates.package = function (doc, req) {
   var deep = require("deep")
   var deepEquals = deep.deepEquals
   var now = (new Date()).toISOString()
+  var username = req.headers['Npm-User'];
 
 
   // Sure would be nice if there was an easy way to toggle this in
@@ -420,7 +422,7 @@ updates.package = function (doc, req) {
     body._id = body.name + "@" + body.version
     d("set body.maintainers to doc.maintainers", doc.maintainers)
     body.maintainers = doc.maintainers
-    body._npmUser = body._npmUser || { name: req.userCtx.name }
+    body._npmUser = body._npmUser || { name: username }
 
     if (body.publishConfig && typeof body.publishConfig === 'object') {
       Object.keys(body.publishConfig).filter(function (k) {
@@ -518,10 +520,10 @@ updates.package = function (doc, req) {
       return
 
     if (!doc.users) doc.users = {}
-    if (newdoc.users[req.userCtx.name])
-      doc.users[req.userCtx.name] = newdoc.users[req.userCtx.name]
+    if (newdoc.users[username])
+      doc.users[username] = newdoc.users[username]
     else
-      delete doc.users[req.userCtx.name]
+      delete doc.users[username]
   }
 
   function mergeAttachments(newdoc, doc) {
