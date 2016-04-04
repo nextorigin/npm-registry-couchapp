@@ -59,7 +59,7 @@ updates.delete = function (doc, req) {
 
   require("monkeypatch").patch(Object, Date, Array, String)
 
-  var username = req.headers['Npm-User'];
+  var username = req.headers && req.headers['Npm-User'] || req.userCtx.name;
   var dt = doc['dist-tags']
   var lv = dt && dt.latest
   var latest = lv && doc.versions && doc.versions[lv]
@@ -147,7 +147,7 @@ updates.package = function (doc, req) {
   var deep = require("deep")
   var deepEquals = deep.deepEquals
   var now = (new Date()).toISOString()
-  var username = req.headers['Npm-User'];
+  var username = req.headers && req.headers['Npm-User'] || req.userCtx.name;
 
 
   // Sure would be nice if there was an easy way to toggle this in

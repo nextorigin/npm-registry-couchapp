@@ -10,7 +10,7 @@ test('lists global packages', function(t) {
   }))
 })
 
-test('hides scoped packages', function(t) {
+test('hides scoped packages', {skip: "nextorigin branch is for private npm"}, function(t) {
   http.get(u + 'index/listAll' , parse(function(er, data, res) {
     t.notOk(data['@npm/package'], 'scoped package listed')
     t.end()
