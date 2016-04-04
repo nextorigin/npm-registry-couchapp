@@ -1,6 +1,14 @@
 # npm-registry-couchapp
 
-[![Build Status](https://img.shields.io/travis/npm/npm-registry-couchapp/master.svg)](https://travis-ci.org/npm/npm-registry-couchapp)
+[![Build Status](https://img.shields.io/travis/nextorigin/npm-registry-couchapp/nextorigin.svg)](https://travis-ci.org/nextorigin/npm-registry-couchapp)
+
+## Next Origin Edition
+
+Staying up to date with latest patches and the npm API
+
+---
+
+## npmjs.com deprecation notice
 
 __deprecation notice: as npm has scaled, the registry architecture has gradually migrated towards
 a complex distributed architecture, of which npm-registry-couchapp is only a small part. FOSS
@@ -10,6 +18,8 @@ the existing API](https://github.com/npm/public-api).__
 __npm-registry-couchapp is still a core part of our functionality, but all new registry features are
 now added to the micro-services that now make up npm. For this reason, we will not be accepting any
 pull requests, or making any changes to this codebase going forward.__
+
+---
 
 The design doc for The npm Registry CouchApp
 
