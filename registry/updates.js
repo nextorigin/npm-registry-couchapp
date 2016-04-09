@@ -360,11 +360,17 @@ updates.package = function (doc, req) {
   function newDoc (doc) {
     if (!doc._id) doc._id = doc.name
     if (!doc.versions) doc.versions = {}
+    if (!doc.maintainers)
+      doc.maintainers = [{name:username, email:username}]
+
     var latest
     for (var v in doc.versions) {
       if (!semver.valid(v, true))
         return error("Invalid version: "+JSON.stringify(v))
-      var p = doc.versions[v]
+      if (!doc.versions[v].maintainers)
+        doc.versions[v].maintainers = doc.maintainers
+      if (!doc.versions[v]._npmUser.name)
+        doc.versions[v]._npmUser = {name: username}
       latest = semver.clean(v, true)
     }
     if (!doc['dist-tags']) doc['dist-tags'] = {}
@@ -372,6 +378,7 @@ updates.package = function (doc, req) {
     if (latest && !doc['dist-tags'].latest) {
       doc["dist-tags"].latest = latest
     }
+
 
     return ok(doc, "created new entry")
   }
@@ -422,7 +429,7 @@ updates.package = function (doc, req) {
     body._id = body.name + "@" + body.version
     d("set body.maintainers to doc.maintainers", doc.maintainers)
     body.maintainers = doc.maintainers
-    body._npmUser = body._npmUser || { name: username }
+    if (!body._npmUser.name) body._npmUser = {name: username}
 
     if (body.publishConfig && typeof body.publishConfig === 'object') {
       Object.keys(body.publishConfig).filter(function (k) {
