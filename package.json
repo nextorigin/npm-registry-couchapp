@@ -18,7 +18,7 @@
     "parse-json-response": "^1.0.1",
     "rimraf": "~2.2.6",
     "tap": "*",
-    "which": "^1.0.5"
+    "which": "^1.2.14"
   },
   "repository": {
     "type": "git",
